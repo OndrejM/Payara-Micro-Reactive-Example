@@ -24,15 +24,12 @@ public class AsyncRESTResource {
     @Inject
     private AsyncResponseMap asyncResponses;
     
-    private boolean hasResponseToComplete;
-    private AsyncResponse responseToComplete;
-
     @GET
-    public void whatIsTheAnswer(@Suspended AsyncResponse response) {
+    public void whatIsTheAnswer(@Suspended AsyncResponse restResponse) {
         Logging.logMessage("REST resource handler started, triggering computation");
         final ComputationRequest computationRequest = new ComputationRequest();
 
-        asyncResponses.put(computationRequest.getId(), response);
+        asyncResponses.put(computationRequest.getId(), restResponse);
         getCache().put(computationRequest.getId(), "");
         computation.fire(computationRequest);
 
