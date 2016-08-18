@@ -1,6 +1,8 @@
 package payara.reactive.rest;
 
 import fish.payara.micro.cdi.Outbound;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.enterprise.context.RequestScoped;
@@ -27,13 +29,26 @@ public class AsyncRESTResource {
     @GET
     public void whatIsTheAnswer(@Suspended AsyncResponse restResponse) {
         Logging.logMessage("REST resource handler started, triggering computation");
-        final ComputationRequest computationRequest = new ComputationRequest();
-
-        asyncResponses.put(computationRequest.getId(), restResponse);
-        getCache().put(computationRequest.getId(), "");
-        computation.fire(computationRequest);
+        
+        compute(restResponse)
+            .exceptionally(e -> restResponse.resume(e))
+            .thenAccept(r -> restResponse.resume(r));
 
         Logging.logMessage("REST resource handler finished, waiting for computation");
+    }
+
+    private CompletionStage compute(AsyncResponse restResponse) {
+        CompletableFuture future = new CompletableFuture();
+        final ComputationRequest computationRequest = new ComputationRequest();
+        
+        asyncResponses.put(computationRequest.getId(), future);
+        callComputationService(computationRequest);
+        return future;
+    }
+
+    private void callComputationService(final ComputationRequest computationRequest) {
+        getCache().put(computationRequest.getId(), "");
+        computation.fire(computationRequest);
     }
 
     private static Cache<Integer, Object> getCache() {
