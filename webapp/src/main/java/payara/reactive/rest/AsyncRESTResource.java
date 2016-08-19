@@ -30,14 +30,14 @@ public class AsyncRESTResource {
     public void whatIsTheAnswer(@Suspended AsyncResponse restResponse) {
         Logging.logMessage("REST resource handler started, triggering computation");
         
-        compute(restResponse)
+        compute()
             .thenAccept(r -> restResponse.resume(r))
             .exceptionally(e -> restResponse.resume(e));
 
         Logging.logMessage("REST resource handler finished, waiting for computation");
     }
 
-    private CompletionStage compute(AsyncResponse restResponse) {
+    private CompletionStage compute() {
         CompletableFuture future = new CompletableFuture();
         final ComputationRequest computationRequest = new ComputationRequest();
         

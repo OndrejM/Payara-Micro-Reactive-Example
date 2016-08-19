@@ -43,11 +43,12 @@ public class Processor {
     }
 
     public void startComputing(ComputationRequest request) {
-        Stream.of("The", "answer", "is", "...", "42", "!")
+        Stream.of("The", "answer", "is", "...", "42")
                 .forEach(v -> {
                     final String answer = getAnswer(v);
-                    sendResult.fire(new ComputationResponse(request, answer));
+                    sendResult.fire(new ComputationResponse(request, answer, false));
                 });
+        sendResult.fire(new ComputationResponse(request, "!", true));        
     }
 
     private String getAnswer(String v) {
