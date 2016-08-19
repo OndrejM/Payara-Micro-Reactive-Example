@@ -31,8 +31,8 @@ public class AsyncRESTResource {
         Logging.logMessage("REST resource handler started, triggering computation");
         
         compute(restResponse)
-            .exceptionally(e -> restResponse.resume(e))
-            .thenAccept(r -> restResponse.resume(r));
+            .thenAccept(r -> restResponse.resume(r))
+            .exceptionally(e -> restResponse.resume(e));
 
         Logging.logMessage("REST resource handler finished, waiting for computation");
     }
