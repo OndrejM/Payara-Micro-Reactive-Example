@@ -1,10 +1,11 @@
 package payara.reactive.rest.test;
 
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ws.rs.client.*;
 import org.junit.Test;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.Response;
 
 /**
@@ -14,32 +15,35 @@ public class AsyncFutureRestClientTest {
 
     @Test
     public void callAsync() {
+        Thread mainThread = Thread.currentThread();
         final JaxrsResponseCallback completion = new JaxrsResponseCallback();
-        ClientBuilder.newClient()
+        JaxrsResponseCallback.get(ClientBuilder.newClient()
                 .target("http://localhost:8080/JavaEEReactive/rest")
                 .path("async")
                 .request()
-                .async()
-                .get(completion);
-        completion.thenAccept(
-                response -> {
-                    System.out.println("Response code " + response.getStatus()
-                            + ", with content: " + response.readEntity(String.class));
-                }
-            )
-            .exceptionally(throwable -> {
-                System.out.println("Failed");
-                throwable.printStackTrace();
-                return null;
-            });
+                .async())
+                .thenAccept(
+                        response -> {
+                            System.out.println("Response code " + response.getStatus()
+                                    + ", with content: " + response.readEntity(String.class));
+                        }
+                )
+                .exceptionally(throwable -> {
+                    System.out.println("Failed");
+                    throwable.printStackTrace();
+                    return null;
+                }).thenRun(() -> {
+                    System.out.println("Interrupting...");
+                    mainThread.interrupt();
+                });
 
-        while (true) {
-            try {
+        try {
+            while (true) {
                 Thread.sleep(1000);
                 System.out.println("I'm alive");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        } catch (InterruptedException e) {
+            System.out.println("Main thread interrupted, stopping.");
         }
     }
 
@@ -53,6 +57,12 @@ public class AsyncFutureRestClientTest {
         @Override
         public void failed(Throwable throwable) {
             super.completeExceptionally(throwable);
+        }
+
+        public static CompletionStage<Response> get(AsyncInvoker invoker) {
+            final JaxrsResponseCallback completion = new JaxrsResponseCallback();
+            invoker.get(completion);
+            return completion;
         }
     }
 }
