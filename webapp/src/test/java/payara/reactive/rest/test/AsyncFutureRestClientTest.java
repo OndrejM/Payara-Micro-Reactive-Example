@@ -1,8 +1,6 @@
 package payara.reactive.rest.test;
 
 import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.client.*;
 import org.junit.Test;
 
