@@ -19,7 +19,7 @@ public class Processor {
     @Outbound
     private Event<ComputationResponse> sendResult;
     
-    public void compute(@Observes @Inbound ComputationRequest request) {
+    public void inboundComputation(@Observes @Inbound ComputationRequest request) {
         try {
             final Cache cache = getCache();
             Logging.logMessage("Received computation request...");
