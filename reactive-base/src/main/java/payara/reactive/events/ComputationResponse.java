@@ -11,10 +11,19 @@ public class ComputationResponse implements Serializable {
     private String answer;
     
     private String errorMessage;
+    
+    private boolean responseComplete = true;
 
     public ComputationResponse(ComputationRequest request, String answer) {
         requestId = request.getId();
         this.answer = answer;
+        this.responseComplete = true;
+    }
+    
+    public ComputationResponse(ComputationRequest request, String answer, boolean responseComplete) {
+        requestId = request.getId();
+        this.answer = answer;
+        this.responseComplete = responseComplete;
     }
     
     public static ComputationResponse error(ComputationRequest request, Throwable t) {
@@ -42,7 +51,9 @@ public class ComputationResponse implements Serializable {
     public String getErrorMessage() {
         return errorMessage;
     }
-    
-    
+
+    public boolean isResponseComplete() {
+        return responseComplete;
+    }
     
 }

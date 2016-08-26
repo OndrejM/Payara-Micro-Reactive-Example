@@ -4,6 +4,7 @@ import fish.payara.micro.cdi.Inbound;
 import fish.payara.micro.cdi.Outbound;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.cache.*;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -19,12 +20,14 @@ public class Processor {
     @Outbound
     private Event<ComputationResponse> sendResult;
     
-    public void compute(@Observes @Inbound ComputationRequest request) {
+    public void inboundComputation(@Observes @Inbound ComputationRequest request) {
         try {
             final Cache cache = getCache();
             Logging.logMessage("Received computation request...");
             if (cache.remove(request.getId())) {
-                sendResult.fire(new ComputationResponse(request, getAnswer()));
+
+                startComputing(request);
+
             } else {
                 Logging.logMessage("Ignoring computation request, somebody else is computing...");
             }
@@ -39,20 +42,30 @@ public class Processor {
         }
     }
 
+    public void startComputing(ComputationRequest request) {
+        Stream.of("The", "answer", "is", "...", "42")
+                .forEach(v -> {
+                    final String answer = getAnswer(v);
+                    sendResult.fire(new ComputationResponse(request, answer, false));
+                });
+        sendResult.fire(new ComputationResponse(request, "!", true));        
+    }
+
+    private String getAnswer(String v) {
+        try {
+            Logging.logMessage("Started long computation...");
+            Thread.sleep(2000);
+            Logging.logMessage("...computation finished");
+            return v;
+        } catch (InterruptedException ex) {
+            return "Could not get answer.";
+        }
+    }
+
     private static Cache<Integer, Object> getCache() {
         return Caching.getCachingProvider()
                 .getCacheManager()
                 .getCache(Application.CACHE_NAME);
     }
     
-    private String getAnswer() {
-        try {
-            Logging.logMessage("Started long computation...");
-            Thread.sleep(5000);
-            Logging.logMessage("...computation finished");
-            return "42";
-        } catch (InterruptedException ex) {
-            return "Could not get answer.";
-        }
-    }
 }
