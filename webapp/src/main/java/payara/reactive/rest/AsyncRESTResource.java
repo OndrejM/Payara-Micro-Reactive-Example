@@ -1,8 +1,9 @@
 package payara.reactive.rest;
 
 import fish.payara.micro.cdi.Outbound;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import payara.reactive.events.ComputationRequest;
+import payara.reactive.util.Logging;
+
 import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.enterprise.context.RequestScoped;
@@ -12,8 +13,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
-import payara.reactive.events.ComputationRequest;
-import payara.reactive.util.Logging;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Path("async")
 @RequestScoped

@@ -1,15 +1,25 @@
 package payara.reactive.rest;
 
 import fish.payara.micro.cdi.Inbound;
-import java.util.*;
-import java.util.concurrent.*;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 import payara.reactive.events.ComputationResponse;
 import payara.reactive.util.Logging;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+
 @ApplicationScoped
 public class AsyncResponseMap {
+
+    @Inject
+    @Push(channel="computation")
+    private PushContext push;
 
     public void handleAnswer(@Observes @Inbound ComputationResponse result) {
         Logging.logMessage("Received response");
@@ -20,6 +30,7 @@ public class AsyncResponseMap {
                         resp.result += " ";
                     }
                     resp.result += result.getAnswer();
+                    push.send(result.getAnswer());
                     if (result.isResponseComplete()) {
                         remove(result.getRequestId());
                         resp.future.complete(resp.result);
