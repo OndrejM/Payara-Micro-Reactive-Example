@@ -2,24 +2,26 @@ package payara.reactive.computation;
 
 import fish.payara.micro.cdi.Inbound;
 import fish.payara.micro.cdi.Outbound;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-import javax.cache.*;
+import payara.reactive.events.ComputationRequest;
+import payara.reactive.events.ComputationResponse;
+import payara.reactive.util.Logging;
+
+import javax.cache.Cache;
+import javax.cache.Caching;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import payara.reactive.events.ComputationRequest;
-import payara.reactive.events.ComputationResponse;
-import payara.reactive.util.Logging;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 @Dependent
 public class Processor {
     @Inject
     @Outbound
     private Event<ComputationResponse> sendResult;
-    
+
     public void inboundComputation(@Observes @Inbound ComputationRequest request) {
         try {
             final Cache cache = getCache();

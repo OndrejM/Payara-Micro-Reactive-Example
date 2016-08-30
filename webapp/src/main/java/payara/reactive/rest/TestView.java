@@ -1,20 +1,31 @@
-package payara.reactive.rest.test;
+package payara.reactive.rest;
 
-import org.junit.Test;
-import payara.reactive.rest.JaxrsResponseCallback;
+import org.omnifaces.cdi.ViewScoped;
 
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.ClientBuilder;
+import java.io.Serializable;
 
 /**
  * Created by mertcaliskan
  */
-public class AsyncFutureRestClientTest {
+@Named
+@ViewScoped
+public class TestView implements Serializable {
 
-    @Test
-    public void callAsync() {
+    public void invoke() {
         Thread mainThread = Thread.currentThread();
+
+        HttpServletRequest request = (HttpServletRequest)
+                FacesContext.getCurrentInstance().getExternalContext().getRequest();
+
         JaxrsResponseCallback.get(ClientBuilder.newClient()
-                .target("http://localhost:8080/JavaEEReactive/rest")
+                .target(request.getScheme() + "://" +
+                        request.getServerName() + ":" +
+                        request.getServerPort() +
+                        request.getContextPath() + "/rest")
                 .path("async")
                 .request()
                 .async())
@@ -29,17 +40,8 @@ public class AsyncFutureRestClientTest {
                     throwable.printStackTrace();
                     return null;
                 }).thenRun(() -> {
-                    System.out.println("Interrupting...");
-                    mainThread.interrupt();
-                });
-
-        try {
-            while (true) {
-                Thread.sleep(1000);
-                System.out.println("I'm alive");
-            }
-        } catch (InterruptedException e) {
-            System.out.println("Main thread interrupted, stopping.");
-        }
+            System.out.println("Interrupting...");
+            mainThread.interrupt();
+        });
     }
 }
