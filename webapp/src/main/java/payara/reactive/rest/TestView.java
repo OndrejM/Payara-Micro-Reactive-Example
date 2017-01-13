@@ -1,12 +1,11 @@
 package payara.reactive.rest;
 
-import org.omnifaces.cdi.ViewScoped;
-
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.ClientBuilder;
 import java.io.Serializable;
+import javax.faces.view.ViewScoped;
 
 /**
  * Created by mertcaliskan

@@ -8,9 +8,10 @@
 
     <name>Reactive - Base</name>
     
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <parent>
+        <groupId>payara.reactive</groupId>
+        <artifactId>Reactive-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
 </project>
