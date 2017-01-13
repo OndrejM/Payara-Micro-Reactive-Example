@@ -27,6 +27,11 @@ public class AsyncRESTResource {
     @Inject
     private AsyncResponseMap asyncResponses;
     
+    /**
+     * The entrypoint for the demo. Requests computation via an outbound event and hooks callbacks to the appropriate CF future.
+     * The requested computation is processed in external "computation" service, which again fires an outbound event with the result. If multiple computation services available, only one of them receives the event, due to synchronization using JCache locks. Enables to load-balance incoming requests for computation dynamically.
+     * @param restResponse
+     */
     @GET
     public void whatIsTheAnswer(@Suspended AsyncResponse restResponse) {
         Logging.logMessage("REST resource handler started, triggering computation");
