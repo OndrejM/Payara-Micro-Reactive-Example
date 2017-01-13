@@ -16,24 +16,13 @@
     <dependencies>
         <dependency>
             <groupId>fish.payara.extras</groupId>
-            <artifactId>payara-micro</artifactId>
+            <artifactId>payara-microprofile</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>reactive-base</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.omnifaces</groupId>
-            <artifactId>omnifaces</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>

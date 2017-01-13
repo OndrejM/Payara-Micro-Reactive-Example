@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>fish.payara.extras</groupId>
-            <artifactId>payara-micro</artifactId>
+            <artifactId>payara-microprofile</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
