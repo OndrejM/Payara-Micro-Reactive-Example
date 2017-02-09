@@ -1,5 +1,6 @@
 package payara.reactive.rest;
 
+import fish.payara.micro.PayaraMicro;
 import fish.payara.micro.cdi.Outbound;
 import payara.reactive.events.ComputationRequest;
 import payara.reactive.util.Logging;
@@ -21,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 public class AsyncRESTResource {
 
     @Inject
-    @Outbound
+    @Outbound(eventName = "computation", loopBack = true)
     private Event<ComputationRequest> computation;
 
     @Inject
@@ -46,6 +47,14 @@ public class AsyncRESTResource {
     private CompletionStage compute() {
         CompletableFuture future = new CompletableFuture();
         final ComputationRequest computationRequest = new ComputationRequest();
+        String instanceName = null;
+        try {
+            instanceName = PayaraMicro.getInstance().getRuntime().getInstanceName();
+        } catch (Exception e) {
+            Logging.logMessage("Not running in PayaraMicro environment, instanceName will be empty");
+        }
+        
+        computationRequest.setInstanceId(instanceName);
         
         asyncResponses.put(computationRequest.getId(), future);
         callComputationService(computationRequest);

@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Reactive - Base</name>
+    <name>Payara Micro Examples - Base</name>
     
     <parent>
         <groupId>payara.reactive</groupId>

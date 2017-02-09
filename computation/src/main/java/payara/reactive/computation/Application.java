@@ -25,7 +25,7 @@ public class Application {
     @PostConstruct
     public void init() {
         Caching.getCachingProvider()
-                .getCacheManager().createCache(CACHE_NAME, new MutableConfiguration<Integer, Object>());
+                .getCacheManager().createCache(CACHE_NAME, new MutableConfiguration<>());
         
     }
     

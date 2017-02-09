@@ -35,7 +35,12 @@
                 <version>7.0</version>
                 <scope>provided</scope>
             </dependency>
-
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.0.0</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>org.omnifaces</groupId>
                 <artifactId>omnifaces</artifactId>

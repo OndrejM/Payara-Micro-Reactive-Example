@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>Reactive - Computation</name>
+    <name>Payara Micro Examples - Computation</name>
 
     <parent>
         <groupId>payara.reactive</groupId>
@@ -21,8 +21,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>fish.payara.extras</groupId>
-            <artifactId>payara-microprofile</artifactId>
+            <groupId>fish.payara.micro</groupId>
+            <artifactId>payara-micro-cdi</artifactId>
+            <version>4.1.1.171-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

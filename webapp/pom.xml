@@ -5,7 +5,7 @@
     <artifactId>reactive-web</artifactId>
     <packaging>war</packaging>
 
-    <name>Reactive - Web</name>
+    <name>Payara Micro Examples - Web</name>
     
     <parent>
         <groupId>payara.reactive</groupId>
@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>fish.payara.extras</groupId>
-            <artifactId>payara-microprofile</artifactId>
+            <artifactId>payara-micro</artifactId>
             <scope>provided</scope>
         </dependency>        
         <dependency>
@@ -24,7 +24,22 @@
             <artifactId>reactive-base</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>fish.payara.micro</groupId>
+            <artifactId>payara-micro-cdi</artifactId>
+            <version>4.1.1.171-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
