@@ -49,7 +49,7 @@ public class AsyncRESTResource {
         final ComputationRequest computationRequest = new ComputationRequest();
         String instanceName = null;
         try {
-            instanceName = PayaraMicro.getInstance().getRuntime().getInstanceName();
+            instanceName = PayaraMicro.getInstance(false).getRuntime().getInstanceName();
         } catch (Exception e) {
             Logging.logMessage("Not running in PayaraMicro environment, instanceName will be empty");
         }
