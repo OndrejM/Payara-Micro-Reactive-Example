@@ -15,10 +15,14 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import javax.cache.CacheManager;
 
 @Path("async")
 @RequestScoped
 public class AsyncRESTResource {
+    
+    @Inject
+    CacheManager cm;
 
     @Inject
     @Outbound
@@ -52,10 +56,8 @@ public class AsyncRESTResource {
         computation.fire(computationRequest);
     }
 
-    private static Cache<Integer, Object> getCache() {
-        return Caching.getCachingProvider()
-                .getCacheManager()
-                .getCache(Application.CACHE_NAME);
+    private Cache<Integer, Object> getCache() {
+        return cm.getCache(Application.CACHE_NAME);
     }
     
 }

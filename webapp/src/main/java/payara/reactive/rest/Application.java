@@ -3,12 +3,15 @@ package payara.reactive.rest;
 import fish.payara.micro.cdi.ClusteredCDIEventBus;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 @ApplicationScoped
 public class Application {
@@ -18,23 +21,25 @@ public class Application {
     @Inject
     private ClusteredCDIEventBus bus;
     
-    public void onStart(@Observes @Initialized(ApplicationScoped.class) Object init) {
+    @Inject
+    CacheManager cm;
+    
+    public void onStart(@Observes @Initialized(ApplicationScoped.class) ServletContext init) {
         bus.initialize();
     }
     
     @PostConstruct
     public void init() {
-        Caching.getCachingProvider()
-                .getCacheManager().createCache(CACHE_NAME, new MutableConfiguration<Integer, Object>());
-        
+        Cache cache = cm.getCache(CACHE_NAME);
+        if (cache == null)
+        {
+            cm.createCache(CACHE_NAME, new MutableConfiguration<Integer, Object>());
+        }        
     }
     
     @PreDestroy
     public void shutdown() {
-        Caching.getCachingProvider()
-                .getCacheManager()
-                .getCache(CACHE_NAME)
-                .close();
+        cm.getCache(CACHE_NAME).close();
     }
     
 }

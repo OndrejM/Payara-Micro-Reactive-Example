@@ -15,12 +15,16 @@ import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import javax.cache.CacheManager;
 
 @Dependent
 public class Processor {
     @Inject
     @Outbound
     private Event<ComputationResponse> sendResult;
+    
+    @Inject
+    CacheManager cm;
 
     public void inboundComputation(@Observes @Inbound ComputationRequest request) {
         try {
@@ -64,10 +68,8 @@ public class Processor {
         }
     }
 
-    private static Cache<Integer, Object> getCache() {
-        return Caching.getCachingProvider()
-                .getCacheManager()
-                .getCache(Application.CACHE_NAME);
+    private  Cache<Integer, Object> getCache() {
+        return cm.getCache(Application.CACHE_NAME);
     }
     
 }
