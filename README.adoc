@@ -1,0 +1,33 @@
+*Webapp* module is for the enduser and it delegatates time consuming coputation (simulated by `Thread.sleep`) to the *computation* module. *Reactive-base* module is just a shared library used by the 2 webapps
+
+The communiction is implemented by *Payara CDI event bus*:
+
+1. webapp sends a remote event to start computation and saves a lock object into distributed cache (using *JCache* in Payara)
+2. first coputation module that receives the event will atomically remove the lock object and do the cmputation
+3. all other computation modules that don't find the lock object will ignore the message
+4. the computing computation module will then send another remote event with the results of the coputation
+5. webapp will receive the response and finish the REST request asyncronously
+
+
+# Build
+
+```
+mvn install
+```
+
+# Run
+
+Start webapp module with Payara Micro and then start the computation module with Payara Micro on a different port or machine. You can start more than 1 compuation module, the work will be balanced among them.
+
+```
+java -jar payara-micro.jar --deploy webapp/target/webapp.war
+java -jar payara-micro.jar --deploy computation/target/computation.war --autoBindHttp
+```
+
+# Test
+
+To test if all works, access https://github.com/OndrejM/Payara-Micro-Reactive-Example/blob/master/webapp/src/main/java/payara/reactive/rest/AsyncRESTResource.java[AsyncRESTResource.whatIsTheAnswer] via a REST call:
+
+```
+curl http://localhost:8080/webapp/rest/async
+```
